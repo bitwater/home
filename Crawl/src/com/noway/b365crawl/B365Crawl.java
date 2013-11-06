@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.noway.b365crawl.bean.TennisGame;
+import com.noway.b365crawl.bean.TennisItem;
 import com.noway.b365crawl.bean.TennisOdd;
 import com.noway.b365crawl.util.DateUtil;
 
@@ -57,31 +58,34 @@ print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 				
 				tennisGame.setUrl(href);
 				tennisGame.setGameName(link.text());
-				tennisGame.setTennisOdds(fetchTennisOdds(href));
+				tennisGame.setTennisItems(fetchTennisItem(href));
 				tennisGame.setCtime(DateUtil.Now());
 
 				tennisGames.add(tennisGame);
-				//break;
+				break;
 			}
 		}
 	}
 	
-	public ArrayList<TennisOdd> fetchTennisOdds(String url)
+	public ArrayList<TennisItem> fetchTennisItem(String url)
 	{
-		ArrayList<TennisOdd> tennisOdds = new ArrayList<TennisOdd>();
+		ArrayList<TennisItem> tennisItems = new ArrayList<TennisItem>();
 		Document doc = Jsoup.parse(getHtmlByUrl(url));
 		Elements sections = doc.getElementsByClass("Section");
 		// Elements sections = doc.select(".Section");
 		print("\nsections: (%d)", sections.size());
 		for (Element section : sections) {
-			TennisOdd tennisOdd = new TennisOdd();
+			TennisItem tennisItem = new TennisItem();
 			System.out.println("Section:"
 					+ section.getElementsByClass("Header").text());
-			tennisOdd.setItem(section.getElementsByClass("Header").text());
-			tennisOdd.setCtime(DateUtil.Now());
+			tennisItem.setItem(section.getElementsByClass("Header").text());
+			tennisItem.setCtime(DateUtil.Now());
 			
+			System.out.println(tennisItem.getItem() + section.toString());
 			Elements elements = getLinks(section);
 			for (Element element : elements) {
+				
+				
 				String[] strings = element.text().split(" ");
 				for (int i = 0; i < strings.length; i++) {
 					if (strings[i] != null) {
@@ -91,9 +95,15 @@ print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 			}
 		}
 		
-		return tennisOdds;
+		return tennisItems;
 	}
 	
+	public ArrayList<TennisOdd> fetchTennisOdd(Elements elements){
+		ArrayList<TennisOdd> tennisOdds = new ArrayList<TennisOdd>();
+		
+		
+		return tennisOdds;
+	}
 	/**
 	 * 根据URL获得所有的html信息
 	 * 

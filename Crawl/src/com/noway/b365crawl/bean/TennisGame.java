@@ -8,7 +8,7 @@ public class TennisGame {
 	private String set;
 	private String url;
 	private String ctime;
-	private ArrayList<TennisOdd> tennisOdds;
+	private ArrayList<TennisItem> tennisItems;
 	
 	public String getGameName() {
 		return gameName;
@@ -28,11 +28,13 @@ public class TennisGame {
 	public void setSet(String set) {
 		this.set = set;
 	}
-	public ArrayList<TennisOdd> getTennisOdds() {
-		return tennisOdds;
+	public ArrayList<TennisItem> getTennisItems()
+	{
+		return tennisItems;
 	}
-	public void setTennisOdds(ArrayList<TennisOdd> tennisOdds) {
-		this.tennisOdds = tennisOdds;
+	public void setTennisItems(ArrayList<TennisItem> tennisItems)
+	{
+		this.tennisItems = tennisItems;
 	}
 	public String getUrl() {
 		return url;
