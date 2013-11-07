@@ -1,6 +1,7 @@
 package com.noway.b365crawl.bean;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class TennisGame {
 	private String gameName;
@@ -47,6 +48,17 @@ public class TennisGame {
 	}
 	public void setCtime(String ctime) {
 		this.ctime = ctime;
+	}
+	@Override
+	public String toString()
+	{
+		System.out.println(gameName);
+		for (TennisItem tennisItem : tennisItems)
+		{
+			System.out.println(tennisItem.getItem());
+		}
+		
+		return gameName;
 	}
 
 }

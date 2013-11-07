@@ -2,7 +2,6 @@ package com.noway.b365crawl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -25,11 +24,9 @@ public class B365Crawl {
 
 	// "https://mobile.28365365.com/sport/splash/Default.aspx?Sport=13&key=13-1-5-0-0-0-0-1-1-0-0-0-0-0-1-0-0-0-0&L=2"
 	private static String url = "https://mobile.28365365.com/sport/splash/Default.aspx?Sport=13&key=13-1-5-0-0-0-0-1-1-0-0-0-0-0-1-0-0-0-0&L=2";
-	private ArrayList<TennisGame> tennisGames = new ArrayList<TennisGame>();
+	public static ArrayList<TennisGame> tennisGames = new ArrayList<TennisGame>();
+	private String ctime;
 	
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		B365Crawl bCrawl = new B365Crawl();
 		bCrawl.run();
@@ -38,9 +35,19 @@ public class B365Crawl {
 	public void run() {
 		System.out.println("******   start fetching......" + DateUtil.Now());
 		fetchTennisGames(url);
+		
+		for (TennisGame tennisGame : tennisGames)
+		{
+			System.out.println("get data:" + tennisGame.toString());
+		}
+		
 		System.out.println("******   end fetching......"  + DateUtil.Now());
 	}
 
+	/**
+	 * @param url
+	 * 逐层解析抓取
+	 */
 	public void fetchTennisGames(String url)
 	{
 		tennisGames = new ArrayList<TennisGame>();
@@ -51,18 +58,21 @@ public class B365Crawl {
 		print("\nLinks: (%d)", links.size());
 		for (Element link : links) {
 			TennisGame tennisGame = new TennisGame();
+			// 每次遍历链接前统一时间记录
+			ctime = DateUtil.Now();
+			
 			String attr = link.attr("href");
 			if (attr.contains("..")) {
 				String href = "https://mobile.28365365.com/sport/coupon/?clvl=2&" + attr.split("&")[1];
 print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 				
+				tennisGame.setCtime(ctime);
 				tennisGame.setUrl(href);
 				tennisGame.setGameName(link.text());
 				tennisGame.setTennisItems(fetchTennisItem(href));
-				tennisGame.setCtime(DateUtil.Now());
 
 				tennisGames.add(tennisGame);
-				break;
+//break;
 			}
 		}
 	}
@@ -78,21 +88,12 @@ print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 			TennisItem tennisItem = new TennisItem();
 			System.out.println("Section:"
 					+ section.getElementsByClass("Header").text());
-			tennisItem.setItem(section.getElementsByClass("Header").text());
-			tennisItem.setCtime(DateUtil.Now());
 			
-			System.out.println(tennisItem.getItem() + section.toString());
-			Elements elements = getLinks(section);
-			for (Element element : elements) {
-				
-				
-				String[] strings = element.text().split(" ");
-				for (int i = 0; i < strings.length; i++) {
-					if (strings[i] != null) {
-						System.out.println("data:" + strings[i]);
-					}
-				}
-			}
+			tennisItem.setItem(section.getElementsByClass("Header").text());
+			tennisItem.setCtime(ctime);
+			tennisItem.setTennisOdds(fetchTennisOdd(getLinks(section)));
+			
+//System.out.println(tennisItem.getItem() + section.toString());
 		}
 		
 		return tennisItems;
@@ -100,10 +101,29 @@ print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 	
 	public ArrayList<TennisOdd> fetchTennisOdd(Elements elements){
 		ArrayList<TennisOdd> tennisOdds = new ArrayList<TennisOdd>();
-		
+		for (Element element : elements) {
+			TennisOdd tennisOdd = new TennisOdd();
+			String[] strings = element.text().split(" ");
+			if (strings.length > 1)
+			{
+				tennisOdd.setOdd(strings[0]);
+				tennisOdd.setOption(strings[1]);
+				tennisOdd.setCtime(ctime);
+				tennisOdd.setUrl(element.attr("href"));
+				
+				for (int i = 0; i < strings.length; i++) {
+					if (strings[i] != null) {
+						System.out.println("data:" + strings[i]);
+					}
+				}
+				
+				tennisOdds.add(tennisOdd);
+			}
+		}
 		
 		return tennisOdds;
 	}
+	
 	/**
 	 * 根据URL获得所有的html信息
 	 * 
