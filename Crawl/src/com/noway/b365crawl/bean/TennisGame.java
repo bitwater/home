@@ -52,12 +52,6 @@ public class TennisGame {
 	@Override
 	public String toString()
 	{
-		System.out.println(gameName);
-		for (TennisItem tennisItem : tennisItems)
-		{
-			System.out.println(tennisItem.getItem());
-		}
-		
 		return gameName;
 	}
 

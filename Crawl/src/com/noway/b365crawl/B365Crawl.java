@@ -94,6 +94,7 @@ print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 			tennisItem.setTennisOdds(fetchTennisOdd(getLinks(section)));
 			
 //System.out.println(tennisItem.getItem() + section.toString());
+			tennisItems.add(tennisItem);
 		}
 		
 		return tennisItems;
