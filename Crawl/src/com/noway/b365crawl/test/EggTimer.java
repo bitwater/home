@@ -41,7 +41,7 @@ public class EggTimer {
     
     // 主程序入口
     public static void main(String[] args) {
-        EggTimer eggTimer = new EggTimer(30);
+        EggTimer eggTimer = new EggTimer(60);
         eggTimer.start();
     }
 }
