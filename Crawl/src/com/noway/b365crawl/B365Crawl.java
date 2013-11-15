@@ -161,8 +161,13 @@ print(" * a: <%s>  (%s)", href, trim(link.text(), 35));
 			} else {
 				// System.out.println(method.getResponseBodyAsString());
 				html = method.getResponseBodyAsString();
+				Thread.sleep((long)(Math.random() + 1.6) * 1000);
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 
